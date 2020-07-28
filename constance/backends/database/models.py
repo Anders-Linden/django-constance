@@ -1,5 +1,6 @@
 from django.db import models
 from django.core.exceptions import ImproperlyConfigured
+from django.contrib.sites.models import Site
 
 from django.utils.translation import ugettext_lazy as _
 
@@ -12,10 +13,12 @@ except ImportError:
 
 
 class Constance(models.Model):
-    key = models.CharField(max_length=255, unique=True)
+    key = models.CharField(max_length=255)
     value = PickledObjectField(null=True, blank=True)
+    site = models.ForeignKey(Site, on_delete=models.CASCADE, default=1)
 
     class Meta:
+        unique_together = ['key', 'site']
         verbose_name = _('constance')
         verbose_name_plural = _('constances')
         db_table = 'constance_config'
